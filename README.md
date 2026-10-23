@@ -19,16 +19,38 @@ on its own.
 
 ## Installing
 
-1. Build it (below), or download `Sparkles.dll` (Windows) or `Sparkles.bundle`
-   (macOS) from a CI run's artifacts.
+Quit Resolume first: it only scans for plugins at launch.
+
+### macOS: the installer
+
+Download `sparkles-<version>-macos.pkg` from the
+[Releases](https://github.com/legofsalmon/ffglsparkles/releases) page (or the
+`sparkles-macos-pkg` artifact of any CI run), double-click it, and tick Arena,
+Avenue or both. It installs into your own Documents folder, so it needs no
+administrator password.
+
+Use the installer rather than copying the bundle by hand. A bundle extracted
+from a downloaded zip carries macOS's quarantine flag, and Resolume silently
+refuses to load it; the installer delivers it without the flag.
+
+Until the package is signed (see [Releases](#releases)), macOS will say it is
+from an unidentified developer the first time: Control-click the .pkg, choose
+**Open**, then **Open** again.
+
+### Windows, or by hand
+
+1. Download `Sparkles.dll` (Windows) or `Sparkles.bundle` (macOS), or build it
+   (below).
 2. Copy it into Resolume's FFGL folder:
    - Windows: `Documents\Resolume Arena\Extra Effects\`
-   - macOS: `~/Documents/Resolume Arena/Extra Effects/`
+   - macOS: `~/Documents/Resolume Arena/Extra Effects/`, then in Terminal
+     `xattr -dr com.apple.quarantine ~/Documents/Resolume\ Arena/Extra\ Effects/Sparkles.bundle`
 
    Or point Resolume at another folder under *Preferences → Video → FFGL plugin
    folders*.
-3. Restart Resolume. **Sparkles** appears in the *Sources* tab alongside the
-   other generators. Drag it into a clip slot like any other generator.
+
+Restart Resolume. **Sparkles** appears in the *Sources* tab alongside the other
+generators. Drag it into a clip slot like any other generator.
 
 To overlay: put the clip on a layer above your content. The layer's blend mode
 can stay on its default; the plugin outputs premultiplied alpha, so anything
@@ -174,8 +196,12 @@ cmake --build build --parallel
 ```
 
 The plugin is `build/src/plugins/Sparkles.bundle`. A bundle you built yourself
-runs fine; one downloaded from the internet may need
-`xattr -dr com.apple.quarantine Sparkles.bundle` first, as it is not notarised.
+is not quarantined and runs as is. To build the installer too:
+
+```sh
+bash packaging/macos/package.sh build/src/plugins 0.1.0 dist
+# dist/sparkles-macos.pkg and dist/sparkles-macos-universal.zip
+```
 
 ### Install straight into Resolume
 
@@ -200,6 +226,29 @@ ctest --test-dir build --output-on-failure
 ```
 
 On macOS or Windows the tests build when GLFW is installed.
+
+## Releases
+
+Push a tag matching the version in `CMakeLists.txt` (`git tag v0.1.0 && git push
+origin v0.1.0`), or run the *release* workflow from the Actions tab with a
+version. It tests, builds both platforms and publishes a GitHub release with the
+Windows zip, the macOS zip and the macOS installer. The tag must match
+`CMakeLists.txt`, or the installer would report success and upgrade nothing.
+
+The installer is signed and notarised only when these repository secrets are
+set (Settings → Secrets and variables → Actions), the same five ffgl-datamosh
+uses. Secrets are per repository, so they have to be added here too:
+
+| Secret | What |
+| --- | --- |
+| `MACOS_CERT_P12` | Base64 of a .p12 holding the *Developer ID Application* and *Developer ID Installer* certificates |
+| `MACOS_CERT_PASSWORD` | That .p12's password |
+| `APPLE_API_KEY_P8` | Base64 of an App Store Connect API key (.p8), for notarisation |
+| `APPLE_API_KEY_ID` | That key's ID |
+| `APPLE_API_ISSUER_ID` | The issuer ID |
+
+Without them everything still builds, and the unsigned installer still avoids
+the quarantine problem; users just see one Gatekeeper prompt.
 
 ## How it works
 

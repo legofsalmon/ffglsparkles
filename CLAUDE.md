@@ -79,6 +79,18 @@ needs the same.
 `RenderTarget` replaces it, and `ScopedViewport` restores the viewport that
 `ScopedFBOBinding` does not.
 
+**The macOS installer exists to avoid quarantine**, not for polish. Resolume
+silently refuses a quarantined, un-notarised plug-in, and a zip quarantines
+what it extracts; installd does not. `packaging/macos/package.sh` checks the
+expanded payload for the flag, and `build-pkg.sh` makes the bundle
+non-relocatable so Installer cannot "upgrade" a stray copy in Downloads
+instead of installing. Both workflows call `package.sh`, so a PR's `.pkg` is
+built exactly as a release's.
+
+**A release tag must match `CMakeLists.txt` VERSION.** The bundle's version
+comes from CMake and the installer compares it to decide whether to upgrade.
+The release workflow refuses a mismatch.
+
 ## Testing
 
 When you fix a silent bug, reintroduce it and confirm the new test fails. The

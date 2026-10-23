@@ -123,3 +123,18 @@ jobs:
           name: sparkles-macos
           path: build/src/plugins/*.bundle
           if-no-files-found: error
+
+      # The installer on every build, not only on release, so the .pkg a pull
+      # request produces can be tried in Resolume before anything is tagged.
+      # Unsigned here: the signing secrets are only handed to the release
+      # workflow. See packaging/macos/build-pkg.sh for why a .pkg at all.
+      - name: Build and verify the installer
+        run: |
+          version=$( sed -n 's/^[[:space:]]*VERSION[[:space:]]*\([0-9][0-9.]*\).*/\1/p' CMakeLists.txt | head -1 )
+          bash packaging/macos/package.sh build/src/plugins "$version" dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sparkles-macos-pkg
+          path: dist/sparkles-macos.pkg
+          if-no-files-found: error
