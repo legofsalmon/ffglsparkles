@@ -22,6 +22,9 @@ ROOT="$( cd "$HERE/../.." && pwd )"
 WORK="$( mktemp -d )"
 trap 'rm -rf "$WORK"' EXIT
 mkdir -p "$OUT"
+# Absolute, because the zip step runs ditto from inside the staging directory.
+OUT="$( cd "$OUT" && pwd )"
+PLUGINS="$( cd "$PLUGINS" && pwd )"
 
 say() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
 
