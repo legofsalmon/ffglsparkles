@@ -102,7 +102,9 @@ for component in "$WORK/expanded"/*.pkg; do
 	# And it goes where Resolume looks, not wherever Installer finds a copy.
 	grep -q 'Extra Effects' "$component/PackageInfo" || {
 		echo "error: $(basename "$component") does not install into Extra Effects" >&2; exit 1; }
-	if grep -q 'relocate' "$component/PackageInfo"; then
+	# relocatable="false" and an empty <relocate/>; a bundle listed inside
+	# <relocate>...</relocate> is one Installer may divert elsewhere.
+	if ! grep -q 'relocatable="false"' "$component/PackageInfo" || grep -q '<relocate>' "$component/PackageInfo"; then
 		echo "error: $(basename "$component") is relocatable" >&2
 		cat "$component/PackageInfo" >&2
 		exit 1
