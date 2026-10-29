@@ -1,0 +1,24 @@
+Sparkles for Resolume - Windows
+===============================
+
+1. Quit Resolume. It scans for plugins only when it starts.
+
+2. Copy Sparkles.dll into Resolume's plugin folder:
+
+       Documents\Resolume Arena\Extra Effects\
+
+   (Resolume Avenue users: Documents\Resolume Avenue\Extra Effects\)
+
+   Create the folder if it does not exist.
+
+3. Start Resolume. Sparkles is in the Sources tab, with the generators.
+
+If it does not appear, right-click Sparkles.dll, choose Properties, and if
+there is an "Unblock" tickbox at the bottom of the General tab, tick it and
+click OK. Windows sometimes blocks files that came from the internet.
+
+
+Requirements
+------------
+
+Resolume Arena or Avenue 7 or later, 64-bit Windows 10 or later.

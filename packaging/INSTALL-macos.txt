@@ -1,0 +1,45 @@
+Sparkles for Resolume - macOS
+=============================
+
+Use the installer
+-----------------
+
+Download sparkles-<version>-macos.pkg from the releases page, double-click it,
+and follow the prompts. Tick Arena, Avenue or both. It installs into your own
+Documents folder, so no administrator password is needed.
+
+Quit Resolume first: it scans for plugins only when it starts.
+
+If macOS says the installer "cannot be opened because it is from an
+unidentified developer" (it is not yet signed by Apple), Control-click the
+.pkg, choose Open, then Open again. Or go to System Settings > Privacy &
+Security and click "Open Anyway". You only need to do this once.
+
+
+This zip, if you would rather copy files by hand
+------------------------------------------------
+
+1. Copy Sparkles.bundle into Resolume's plugin folder:
+
+       ~/Documents/Resolume Arena/Extra Effects/
+
+   (Resolume Avenue users: ~/Documents/Resolume Avenue/Extra Effects/)
+
+2. Clear the quarantine flag.
+
+   macOS attaches a quarantine attribute to anything extracted from a
+   downloaded zip, and will then refuse to let Resolume load the plugin.
+   There is no error message: it simply does not appear. In Terminal:
+
+       xattr -dr com.apple.quarantine ~/Documents/Resolume\ Arena/Extra\ Effects/Sparkles.bundle
+
+   The installer above avoids this step entirely.
+
+3. Restart Resolume. Sparkles is in the Sources tab, with the generators.
+
+
+Requirements
+------------
+
+Resolume Arena or Avenue 7 or later, macOS 10.15 or later, Apple Silicon or
+Intel (the bundle contains both).
